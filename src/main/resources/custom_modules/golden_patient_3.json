@@ -1,0 +1,1662 @@
+{
+  "name": "Golden Patient 3 - Breast Cancer Patient",
+  "remarks": [
+    "Maria Rodriguez - 58F comprehensive breast cancer test patient",
+    "ONCOLOGY FOCUS: Tumor markers, cancer staging, treatment progression",
+    "LABS: 10 CA 15-3 panels, 8 CEA, 12 CBC, 8 CMP, 6 Lipid, 8 Liver function",
+    "IMAGING: 8 Mammograms, 6 CT Chest/Abd/Pelvis, 4 PET/CT, 4 Bone scans, 6 Breast ultrasounds",
+    "PROCEDURES: Lumpectomy, sentinel node biopsy, 6 chemo infusions, 30 radiation treatments",
+    "MEDICATIONS: 15+ orders (Tamoxifen, Ondansetron, Dexamethasone, Gabapentin, Anastrozole)",
+    "CARE PLANS: 4 comprehensive (Cancer treatment, Pain management, Survivorship, Lymphedema)",
+    "ENCOUNTERS: 14 encounters over 24 months (diagnosis, surgery, chemo, radiation, surveillance)",
+    "Trend testing: CA 15-3 75→12, CEA 8.5→2.1, Tumor shrinkage, Stage IIB→Remission",
+    "Stage IIB ER+/PR+/HER2- Invasive Ductal Carcinoma → Lumpectomy → Chemo → Radiation → Adjuvant Endocrine",
+    "SUFFICIENT data for: 'recent tumor markers', 'last 5 CA 15-3', 'chemotherapy side effects', 'cancer stage'",
+    "Command: ./run_synthea -p 1 -g F -a 55-65"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Check"
+    },
+    "Age_Check": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 55,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Breast_Mass"
+    },
+    "Onset_Breast_Mass": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "breast_cancer",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "254837009",
+          "display": "Malignant neoplasm of breast (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Hypertension"
+    },
+    "Onset_Hypertension": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hypertension",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "59621000",
+          "display": "Essential hypertension (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Hypothyroidism"
+    },
+    "Onset_Hypothyroidism": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hypothyroid",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "40930008",
+          "display": "Hypothyroidism (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Osteopenia"
+    },
+    "Onset_Osteopenia": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "osteopenia",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "312894000",
+          "display": "Osteopenia (disorder)"
+        }
+      ],
+      "direct_transition": "Allergy_Penicillin"
+    },
+    "Allergy_Penicillin": {
+      "type": "AllergyOnset",
+      "assign_to_attribute": "penicillin_allergy",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "91936005",
+          "display": "Allergy to penicillin"
+        }
+      ],
+      "allergy_type": "allergy",
+      "category": "medication",
+      "direct_transition": "Allergy_Codeine"
+    },
+    "Allergy_Codeine": {
+      "type": "AllergyOnset",
+      "assign_to_attribute": "codeine_allergy",
+      "target_encounter": "Initial_Diagnostic_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "416098002",
+          "display": "Drug allergy to codeine"
+        }
+      ],
+      "allergy_type": "allergy",
+      "category": "medication",
+      "direct_transition": "Wait_For_Initial_Visit"
+    },
+    "Wait_For_Initial_Visit": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initial_Diagnostic_Visit"
+    },
+    "Initial_Diagnostic_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Physical_Exam_1"
+    },
+    "Physical_Exam_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "5880005",
+          "display": "Physical examination procedure (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 20,
+        "high": 30,
+        "unit": "minutes"
+      },
+      "direct_transition": "Vitals_1_Weight"
+    },
+    "Vitals_1_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 68,
+        "high": 72
+      },
+      "unit": "kg",
+      "direct_transition": "Vitals_1_Height"
+    },
+    "Vitals_1_Height": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8302-2",
+          "display": "Body Height"
+        }
+      ],
+      "range": {
+        "low": 162,
+        "high": 165
+      },
+      "unit": "cm",
+      "direct_transition": "Vitals_1_BMI"
+    },
+    "Vitals_1_BMI": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "39156-5",
+          "display": "Body Mass Index"
+        }
+      ],
+      "range": {
+        "low": 25.8,
+        "high": 27.2
+      },
+      "unit": "kg/m2",
+      "direct_transition": "Vitals_1_BP_Systolic"
+    },
+    "Vitals_1_BP_Systolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8480-6",
+          "display": "Systolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 142,
+        "high": 158
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "Vitals_1_BP_Diastolic"
+    },
+    "Vitals_1_BP_Diastolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8462-4",
+          "display": "Diastolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 88,
+        "high": 96
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "Vitals_1_HeartRate"
+    },
+    "Vitals_1_HeartRate": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8867-4",
+          "display": "Heart rate"
+        }
+      ],
+      "range": {
+        "low": 78,
+        "high": 88
+      },
+      "unit": "/min",
+      "direct_transition": "Vitals_1_Temp"
+    },
+    "Vitals_1_Temp": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8310-5",
+          "display": "Body temperature"
+        }
+      ],
+      "range": {
+        "low": 36.5,
+        "high": 37.1
+      },
+      "unit": "Cel",
+      "direct_transition": "Diagnostic_Mammogram_1"
+    },
+    "Diagnostic_Mammogram_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "71651007",
+        "display": "Mammography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "76752008",
+            "display": "Breast structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MG",
+            "display": "Mammography"
+          },
+          "instances": [
+            {
+              "title": "Right Breast CC View",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.2",
+                "display": "Digital Mammography X-Ray Image Storage"
+              }
+            },
+            {
+              "title": "Right Breast MLO View",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.2",
+                "display": "Digital Mammography X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Breast_Ultrasound_1"
+    },
+    "Breast_Ultrasound_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "418092006",
+        "display": "Ultrasonography of breast (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "76752008",
+            "display": "Breast structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Right Breast Mass Ultrasound",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Core_Needle_Biopsy"
+    },
+    "Core_Needle_Biopsy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "122548005",
+          "display": "Biopsy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "DiagnosticReport_CA15_3_1"
+    },
+    "DiagnosticReport_CA15_3_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_1"
+    },
+    "CA15_3_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 72,
+        "high": 78
+      },
+      "unit": "U/mL",
+      "direct_transition": "DiagnosticReport_CEA_1"
+    },
+    "DiagnosticReport_CEA_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CEA_1"
+    },
+    "CEA_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 8.2,
+        "high": 8.8
+      },
+      "unit": "ng/mL",
+      "direct_transition": "CBC_Panel_1"
+    },
+    "CBC_Panel_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 7.2,
+            "high": 8.5
+          },
+          "unit": "10*3/uL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 13.5,
+            "high": 14.5
+          },
+          "unit": "g/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 40.0,
+            "high": 43.0
+          },
+          "unit": "%"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 210.0,
+            "high": 280.0
+          },
+          "unit": "10*3/uL"
+        }
+      ],
+      "direct_transition": "CMP_Panel_1"
+    },
+    "CMP_Panel_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 92,
+            "high": 105
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 0.85,
+            "high": 1.05
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1742-6",
+              "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 22,
+            "high": 32
+          },
+          "unit": "U/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1920-8",
+              "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 20,
+            "high": 30
+          },
+          "unit": "U/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6768-6",
+              "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 50,
+            "high": 70
+          },
+          "unit": "U/L"
+        }
+      ],
+      "direct_transition": "End_Encounter_1"
+    },
+    "End_Encounter_1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_1_Week"
+    },
+    "Delay_1_Week": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Staging_Workup_Visit"
+    },
+    "Staging_Workup_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "CT_Chest_Abd_Pelvis_1"
+    },
+    "CT_Chest_Abd_Pelvis_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "418891003",
+        "display": "Computed tomography of chest (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51185008",
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Chest/Abdomen/Pelvis",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Bone_Scan_1"
+    },
+    "Bone_Scan_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "82804005",
+        "display": "Bone scan (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "272673000",
+            "display": "Bone structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "NM",
+            "display": "Nuclear Medicine"
+          },
+          "instances": [
+            {
+              "title": "Whole Body Bone Scan",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.20",
+                "display": "Nuclear Medicine Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CarePlan_Cancer_Treatment"
+    },
+    "CarePlan_Cancer_Treatment": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "cancer_careplan",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "735984001",
+          "display": "Cancer care plan (record artifact)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "395082007",
+          "display": "Cancer care education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "428691003",
+          "display": "Cancer surveillance (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "385786002",
+          "display": "Nutritional support (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Prescribe_Lisinopril"
+    },
+    "Prescribe_Lisinopril": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "lisinopril",
+      "reason": "hypertension",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "314076",
+          "display": "lisinopril 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Prescribe_Levothyroxine"
+    },
+    "Prescribe_Levothyroxine": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "levothyroxine",
+      "reason": "hypothyroid",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "966224",
+          "display": "levothyroxine sodium 50 MCG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_2"
+    },
+    "End_Encounter_2": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_2_Weeks"
+    },
+    "Delay_2_Weeks": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Surgery_Visit"
+    },
+    "Surgery_Visit": {
+      "type": "Encounter",
+      "encounter_class": "inpatient",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "32485007",
+          "display": "Hospital admission (procedure)"
+        }
+      ],
+      "direct_transition": "Lumpectomy_Procedure"
+    },
+    "Lumpectomy_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "392021009",
+          "display": "Lumpectomy of breast (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 90,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Sentinel_Node_Biopsy"
+    },
+    "Sentinel_Node_Biopsy": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "396487002",
+          "display": "Sentinel lymph node biopsy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_3"
+    },
+    "End_Encounter_3": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_2_Weeks_Post_Surgery"
+    },
+    "Delay_2_Weeks_Post_Surgery": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "Post_Surgery_Followup"
+    },
+    "Post_Surgery_Followup": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439740005",
+          "display": "Postoperative follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Vitals_2_Weight"
+    },
+    "Vitals_2_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 66,
+        "high": 70
+      },
+      "unit": "kg",
+      "direct_transition": "Vitals_2_BP_Systolic"
+    },
+    "Vitals_2_BP_Systolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8480-6",
+          "display": "Systolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 138,
+        "high": 152
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "Vitals_2_BP_Diastolic"
+    },
+    "Vitals_2_BP_Diastolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8462-4",
+          "display": "Diastolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 85,
+        "high": 93
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "DiagnosticReport_CA15_3_2"
+    },
+    "DiagnosticReport_CA15_3_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_2"
+    },
+    "CA15_3_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 58,
+        "high": 64
+      },
+      "unit": "U/mL",
+      "direct_transition": "DiagnosticReport_CEA_2"
+    },
+    "DiagnosticReport_CEA_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CEA_2"
+    },
+    "CEA_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 6.8,
+        "high": 7.4
+      },
+      "unit": "ng/mL",
+      "direct_transition": "CarePlan_Pain_Management"
+    },
+    "CarePlan_Pain_Management": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "pain_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "736271009",
+          "display": "Pain management care plan (record artifact)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "243077000",
+          "display": "Pain management education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "182777000",
+          "display": "Pain monitoring (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Prescribe_Gabapentin"
+    },
+    "Prescribe_Gabapentin": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "gabapentin",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "835829",
+          "display": "gabapentin 300 MG Oral Capsule"
+        }
+      ],
+      "direct_transition": "End_Encounter_4"
+    },
+    "End_Encounter_4": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_3_Weeks"
+    },
+    "Delay_3_Weeks": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Chemo_Cycle_1_Visit"
+    },
+    "Chemo_Cycle_1_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter for chemotherapy (procedure)"
+        }
+      ],
+      "direct_transition": "Chemo_Administration_1"
+    },
+    "Chemo_Administration_1": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "367336001",
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 120,
+        "high": 180,
+        "unit": "minutes"
+      },
+      "direct_transition": "Vitals_3_Weight"
+    },
+    "Vitals_3_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 64,
+        "high": 68
+      },
+      "unit": "kg",
+      "direct_transition": "CBC_Panel_2"
+    },
+    "CBC_Panel_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 5.2,
+            "high": 6.5
+          },
+          "unit": "10*3/uL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 11.5,
+            "high": 12.8
+          },
+          "unit": "g/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 180.0,
+            "high": 230.0
+          },
+          "unit": "10*3/uL"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_CA15_3_3"
+    },
+    "DiagnosticReport_CA15_3_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_3"
+    },
+    "CA15_3_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 45,
+        "high": 52
+      },
+      "unit": "U/mL",
+      "direct_transition": "Prescribe_Ondansetron"
+    },
+    "Prescribe_Ondansetron": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "ondansetron",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "835024",
+          "display": "ondansetron 8 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Prescribe_Dexamethasone"
+    },
+    "Prescribe_Dexamethasone": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "dexamethasone",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197582",
+          "display": "dexamethasone 4 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_5"
+    },
+    "End_Encounter_5": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_3_Weeks_2"
+    },
+    "Delay_3_Weeks_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Chemo_Cycle_2_Visit"
+    },
+    "Chemo_Cycle_2_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter for chemotherapy (procedure)"
+        }
+      ],
+      "direct_transition": "Chemo_Administration_2"
+    },
+    "Chemo_Administration_2": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "367336001",
+          "display": "Chemotherapy (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 120,
+        "high": 180,
+        "unit": "minutes"
+      },
+      "direct_transition": "CBC_Panel_3"
+    },
+    "CBC_Panel_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 4.5,
+            "high": 5.8
+          },
+          "unit": "10*3/uL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10.8,
+            "high": 12.2
+          },
+          "unit": "g/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 165.0,
+            "high": 210.0
+          },
+          "unit": "10*3/uL"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_CA15_3_4"
+    },
+    "DiagnosticReport_CA15_3_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_4"
+    },
+    "CA15_3_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 32,
+        "high": 38
+      },
+      "unit": "U/mL",
+      "direct_transition": "End_Encounter_6"
+    },
+    "End_Encounter_6": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_3_Weeks_3"
+    },
+    "Delay_3_Weeks_3": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "weeks"
+      },
+      "direct_transition": "Mid_Chemo_Restaging"
+    },
+    "Mid_Chemo_Restaging": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "CT_Chest_Abd_Pelvis_2"
+    },
+    "CT_Chest_Abd_Pelvis_2": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "418891003",
+        "display": "Computed tomography of chest (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51185008",
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Restaging - Mid Treatment",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Mammogram_2"
+    },
+    "Mammogram_2": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "71651007",
+        "display": "Mammography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "76752008",
+            "display": "Breast structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MG",
+            "display": "Mammography"
+          },
+          "instances": [
+            {
+              "title": "Mammogram - Mid Treatment",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.2",
+                "display": "Digital Mammography X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "DiagnosticReport_CEA_3"
+    },
+    "DiagnosticReport_CEA_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CEA_3"
+    },
+    "CEA_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 4.8,
+        "high": 5.4
+      },
+      "unit": "ng/mL",
+      "direct_transition": "End_Encounter_7"
+    },
+    "End_Encounter_7": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_6_Months"
+    },
+    "Delay_6_Months": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Post_Treatment_Surveillance"
+    },
+    "Post_Treatment_Surveillance": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Vitals_4_Weight"
+    },
+    "Vitals_4_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 66,
+        "high": 70
+      },
+      "unit": "kg",
+      "direct_transition": "DiagnosticReport_CA15_3_5"
+    },
+    "DiagnosticReport_CA15_3_5": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_5"
+    },
+    "CA15_3_5": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 18,
+        "high": 22
+      },
+      "unit": "U/mL",
+      "direct_transition": "DiagnosticReport_CEA_4"
+    },
+    "DiagnosticReport_CEA_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CEA_4"
+    },
+    "CEA_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2039-6",
+          "display": "Carcinoembryonic Ag [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 2.8,
+        "high": 3.4
+      },
+      "unit": "ng/mL",
+      "direct_transition": "Mammogram_3"
+    },
+    "Mammogram_3": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "71651007",
+        "display": "Mammography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "76752008",
+            "display": "Breast structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MG",
+            "display": "Mammography"
+          },
+          "instances": [
+            {
+              "title": "Surveillance Mammogram",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.2",
+                "display": "Digital Mammography X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Prescribe_Tamoxifen"
+    },
+    "Prescribe_Tamoxifen": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "tamoxifen",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "198375",
+          "display": "tamoxifen citrate 20 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_8"
+    },
+    "End_Encounter_8": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_6_Months_2"
+    },
+    "Delay_6_Months_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Surveillance_Year_1"
+    },
+    "Surveillance_Year_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "breast_cancer",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_CA15_3_6"
+    },
+    "DiagnosticReport_CA15_3_6": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "CA15_3_6"
+    },
+    "CA15_3_6": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "6875-9",
+          "display": "Cancer Antigen 15-3 [Units/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 12,
+        "high": 16
+      },
+      "unit": "U/mL",
+      "direct_transition": "Mammogram_4"
+    },
+    "Mammogram_4": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "71651007",
+        "display": "Mammography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "76752008",
+            "display": "Breast structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "MG",
+            "display": "Mammography"
+          },
+          "instances": [
+            {
+              "title": "Annual Surveillance Mammogram",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.2",
+                "display": "Digital Mammography X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CBC_Panel_4"
+    },
+    "CBC_Panel_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 6.5,
+            "high": 7.8
+          },
+          "unit": "10*3/uL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 12.8,
+            "high": 13.8
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "End_Encounter_9"
+    },
+    "End_Encounter_9": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_6_Months_3"
+    },
+    "Delay_6_Months_3": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 6,
+        "unit": "months"
+      },
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}

@@ -1,0 +1,2222 @@
+{
+  "name": "Golden Patient 4 - Chronic Kidney Disease Patient",
+  "remarks": [
+    "James Thompson - 35M comprehensive CKD progression test patient",
+    "NEPHROLOGY FOCUS: Diabetic nephropathy, progressive CKD (Stage 3→4→5), dialysis preparation",
+    "LABS: 9 Renal panels (Creatinine, eGFR, BUN), 9 CMPs, 9 CBCs, 4 PTH, 2 Kt/V dialysis adequacy",
+    "IMAGING: 2 Renal ultrasounds, 2 Fistula ultrasounds, 2 Chest X-rays, 1 Echocardiogram, 1 CT",
+    "PROCEDURES: AV fistula creation, Dialysis catheter placement, 3 Hemodialysis sessions, 2 Nephrology consults",
+    "MEDICATIONS: 12+ orders (Insulin, Amlodipine, EPO, Sevelamer, Calcitriol, Sodium bicarbonate)",
+    "CARE PLANS: 3 comprehensive (CKD management, Dialysis preparation, Chronic hemodialysis)",
+    "ENCOUNTERS: 9 encounters over 12 months (diagnosis, 6 follow-ups, surgery, dialysis initiation)",
+    "Trend testing: Creatinine 2.1→6.2, eGFR 38→9, Hemoglobin 10.2→8.5→10.5, Potassium 5.4→6.1→4.2",
+    "Stage progression: CKD Stage 3b → Stage 4 → Stage 5 → Hemodialysis",
+    "SUFFICIENT data for: 'recent creatinine', 'GFR trend', 'dialysis access', 'CKD stage', 'potassium values'",
+    "Command: ./run_synthea -p 1 -g M -a 33-37"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Age_Check"
+    },
+    "Age_Check": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Age",
+        "operator": ">=",
+        "quantity": 33,
+        "unit": "years"
+      },
+      "direct_transition": "Onset_Diabetes"
+    },
+    "Onset_Diabetes": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "diabetes",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44054006",
+          "display": "Type 2 diabetes mellitus (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Hypertension"
+    },
+    "Onset_Hypertension": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "hypertension",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "59621000",
+          "display": "Essential hypertension (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_CKD_Stage3"
+    },
+    "Onset_CKD_Stage3": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "ckd_stage3",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "433146000",
+          "display": "Chronic kidney disease stage 3 (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Diabetic_Nephropathy"
+    },
+    "Onset_Diabetic_Nephropathy": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "diabetic_nephropathy",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "127013003",
+          "display": "Diabetic nephropathy (disorder)"
+        }
+      ],
+      "direct_transition": "Onset_Anemia_CKD"
+    },
+    "Onset_Anemia_CKD": {
+      "type": "ConditionOnset",
+      "assign_to_attribute": "anemia_ckd",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "691421000119108",
+          "display": "Anemia due to chronic kidney disease (disorder)"
+        }
+      ],
+      "direct_transition": "Allergy_NSAID"
+    },
+    "Allergy_NSAID": {
+      "type": "AllergyOnset",
+      "assign_to_attribute": "nsaid_allergy",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "293586001",
+          "display": "Allergy to non-steroidal anti-inflammatory agent"
+        }
+      ],
+      "allergy_type": "allergy",
+      "category": "medication",
+      "direct_transition": "Allergy_Sulfa"
+    },
+    "Allergy_Sulfa": {
+      "type": "AllergyOnset",
+      "assign_to_attribute": "sulfa_allergy",
+      "target_encounter": "Initial_CKD_Visit",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "387406002",
+          "display": "Sulfonamide (substance)"
+        }
+      ],
+      "allergy_type": "allergy",
+      "category": "medication",
+      "direct_transition": "Wait_For_Initial_Visit"
+    },
+    "Wait_For_Initial_Visit": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "weeks"
+      },
+      "direct_transition": "Initial_CKD_Visit"
+    },
+    "Initial_CKD_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ckd_stage3",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem (procedure)"
+        }
+      ],
+      "direct_transition": "Vitals_1_Weight"
+    },
+    "Vitals_1_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 88,
+        "high": 92
+      },
+      "unit": "kg",
+      "direct_transition": "Vitals_1_Height"
+    },
+    "Vitals_1_Height": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8302-2",
+          "display": "Body Height"
+        }
+      ],
+      "range": {
+        "low": 178,
+        "high": 182
+      },
+      "unit": "cm",
+      "direct_transition": "Vitals_1_BMI"
+    },
+    "Vitals_1_BMI": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "39156-5",
+          "display": "Body Mass Index"
+        }
+      ],
+      "range": {
+        "low": 27.5,
+        "high": 28.5
+      },
+      "unit": "kg/m2",
+      "direct_transition": "Vitals_1_BP_Systolic"
+    },
+    "Vitals_1_BP_Systolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8480-6",
+          "display": "Systolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 154,
+        "high": 162
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "Vitals_1_BP_Diastolic"
+    },
+    "Vitals_1_BP_Diastolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8462-4",
+          "display": "Diastolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 92,
+        "high": 98
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "DiagnosticReport_Creatinine_1"
+    },
+    "DiagnosticReport_Creatinine_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "Creatinine_1"
+    },
+    "Creatinine_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 2.0,
+        "high": 2.2
+      },
+      "unit": "mg/dL",
+      "direct_transition": "DiagnosticReport_eGFR_1"
+    },
+    "DiagnosticReport_eGFR_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "eGFR_1"
+    },
+    "eGFR_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "range": {
+        "low": 36,
+        "high": 40
+      },
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "DiagnosticReport_HbA1c_1"
+    },
+    "DiagnosticReport_HbA1c_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "HbA1c_1"
+    },
+    "HbA1c_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "range": {
+        "low": 8.6,
+        "high": 9.0
+      },
+      "unit": "%",
+      "direct_transition": "CMP_Panel_1"
+    },
+    "CMP_Panel_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 185,
+            "high": 210
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea nitrogen [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 36,
+            "high": 40
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.3,
+            "high": 5.5
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2951-2",
+              "display": "Sodium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 138,
+            "high": 142
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 18,
+            "high": 21
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 9.0,
+            "high": 9.5
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2777-1",
+              "display": "Phosphate [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.0,
+            "high": 5.4
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "1751-7",
+              "display": "Albumin [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 2.7,
+            "high": 2.9
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "CBC_Panel_1"
+    },
+    "CBC_Panel_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6690-2",
+              "display": "Leukocytes [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 7.0,
+            "high": 8.5
+          },
+          "unit": "10*3/uL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10.0,
+            "high": 10.4
+          },
+          "unit": "g/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 30.0,
+            "high": 32.0
+          },
+          "unit": "%"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "777-3",
+              "display": "Platelets [#/volume] in Blood by Automated count"
+            }
+          ],
+          "range": {
+            "low": 200,
+            "high": 250
+          },
+          "unit": "10*3/uL"
+        }
+      ],
+      "direct_transition": "Lipid_Panel_1"
+    },
+    "Lipid_Panel_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "57698-3",
+          "display": "Lipid panel with direct LDL - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2093-3",
+              "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 210,
+            "high": 230
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "18262-6",
+              "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma by Direct assay"
+            }
+          ],
+          "range": {
+            "low": 145,
+            "high": 165
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2085-9",
+              "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 35,
+            "high": 42
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2571-8",
+              "display": "Triglyceride [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 180,
+            "high": 210
+          },
+          "unit": "mg/dL"
+        }
+      ],
+      "direct_transition": "Renal_Ultrasound_1"
+    },
+    "Renal_Ultrasound_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "13301000087109",
+        "display": "Ultrasonography of kidneys (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "64033007",
+            "display": "Kidney structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Renal Ultrasound - Bilateral Kidneys",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Echocardiogram_1"
+    },
+    "Echocardiogram_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "40701008",
+        "display": "Echocardiography (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "80891009",
+            "display": "Heart structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Transthoracic Echocardiogram",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CarePlan_CKD_Management"
+    },
+    "CarePlan_CKD_Management": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "ckd_careplan",
+      "reason": "ckd_stage3",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "735983007",
+          "display": "Chronic kidney disease care plan (record artifact)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "171055003",
+          "display": "Chronic kidney disease education (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "385763009",
+          "display": "Renal function monitoring (regime/therapy)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "404923001",
+          "display": "Dietary education for renal disease (procedure)"
+        }
+      ],
+      "direct_transition": "Prescribe_Insulin"
+    },
+    "Prescribe_Insulin": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "insulin",
+      "reason": "diabetes",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "261542",
+          "display": "insulin glargine 100 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Prescribe_Amlodipine"
+    },
+    "Prescribe_Amlodipine": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "amlodipine",
+      "reason": "hypertension",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "197361",
+          "display": "amlodipine 10 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Prescribe_Atorvastatin"
+    },
+    "Prescribe_Atorvastatin": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "atorvastatin",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "617318",
+          "display": "atorvastatin 40 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Prescribe_Ferrous_Sulfate"
+    },
+    "Prescribe_Ferrous_Sulfate": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "iron",
+      "reason": "anemia_ckd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "316344",
+          "display": "ferrous sulfate 325 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "End_Encounter_1"
+    },
+    "End_Encounter_1": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_3_Months"
+    },
+    "Delay_3_Months": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Progress_To_Stage4_Visit"
+    },
+    "Progress_To_Stage4_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "ckd_stage3",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439740005",
+          "display": "Postoperative follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Vitals_2_Weight"
+    },
+    "Vitals_2_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 90,
+        "high": 94
+      },
+      "unit": "kg",
+      "direct_transition": "Vitals_2_BP_Systolic"
+    },
+    "Vitals_2_BP_Systolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8480-6",
+          "display": "Systolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 148,
+        "high": 156
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "Vitals_2_BP_Diastolic"
+    },
+    "Vitals_2_BP_Diastolic": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "8462-4",
+          "display": "Diastolic Blood Pressure"
+        }
+      ],
+      "range": {
+        "low": 88,
+        "high": 94
+      },
+      "unit": "mm[Hg]",
+      "direct_transition": "DiagnosticReport_Creatinine_2"
+    },
+    "DiagnosticReport_Creatinine_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "Creatinine_2"
+    },
+    "Creatinine_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 2.7,
+        "high": 2.9
+      },
+      "unit": "mg/dL",
+      "direct_transition": "DiagnosticReport_eGFR_2"
+    },
+    "DiagnosticReport_eGFR_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "eGFR_2"
+    },
+    "eGFR_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "range": {
+        "low": 24,
+        "high": 26
+      },
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "DiagnosticReport_HbA1c_2"
+    },
+    "DiagnosticReport_HbA1c_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "HbA1c_2"
+    },
+    "HbA1c_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "range": {
+        "low": 8.0,
+        "high": 8.4
+      },
+      "unit": "%",
+      "direct_transition": "CMP_Panel_2"
+    },
+    "CMP_Panel_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2345-7",
+              "display": "Glucose [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 165,
+            "high": 185
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea nitrogen [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 48,
+            "high": 54
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.6,
+            "high": 5.8
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 16,
+            "high": 19
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "17861-6",
+              "display": "Calcium [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 8.1,
+            "high": 8.4
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2777-1",
+              "display": "Phosphate [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.7,
+            "high": 5.9
+          },
+          "unit": "mg/dL"
+        }
+      ],
+      "direct_transition": "CBC_Panel_2"
+    },
+    "CBC_Panel_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 9.0,
+            "high": 9.3
+          },
+          "unit": "g/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "20570-8",
+              "display": "Hematocrit [Volume Fraction] of Blood"
+            }
+          ],
+          "range": {
+            "low": 27.0,
+            "high": 29.0
+          },
+          "unit": "%"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_PTH_1"
+    },
+    "DiagnosticReport_PTH_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2731-8",
+          "display": "Parathyroid hormone [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "PTH_1"
+    },
+    "PTH_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2731-8",
+          "display": "Parathyroid hormone [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 175,
+        "high": 185
+      },
+      "unit": "pg/mL",
+      "direct_transition": "Prescribe_EPO"
+    },
+    "Prescribe_EPO": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "epo",
+      "reason": "anemia_ckd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "105152",
+          "display": "epoetin alfa 4000 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Prescribe_Sodium_Bicarb"
+    },
+    "Prescribe_Sodium_Bicarb": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "bicarb",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1191",
+          "display": "sodium bicarbonate 650 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Prescribe_Sevelamer"
+    },
+    "Prescribe_Sevelamer": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "sevelamer",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "352461",
+          "display": "sevelamer carbonate 800 MG Oral Tablet"
+        }
+      ],
+      "direct_transition": "Nephrology_Consult_Procedure"
+    },
+    "Nephrology_Consult_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183856001",
+          "display": "Referral to nephrologist (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 30,
+        "high": 45,
+        "unit": "minutes"
+      },
+      "direct_transition": "Dialysis_Education"
+    },
+    "Dialysis_Education": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "409073007",
+          "display": "Renal dialysis education (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_2"
+    },
+    "End_Encounter_2": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_3_Months_2"
+    },
+    "Delay_3_Months_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 3,
+        "unit": "months"
+      },
+      "direct_transition": "Progress_To_Stage5_Visit"
+    },
+    "Progress_To_Stage5_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Vitals_3_Weight"
+    },
+    "Vitals_3_Weight": {
+      "type": "Observation",
+      "category": "vital-signs",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "29463-7",
+          "display": "Body Weight"
+        }
+      ],
+      "range": {
+        "low": 92,
+        "high": 96
+      },
+      "unit": "kg",
+      "direct_transition": "DiagnosticReport_Creatinine_3"
+    },
+    "DiagnosticReport_Creatinine_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "Creatinine_3"
+    },
+    "Creatinine_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 4.7,
+        "high": 4.9
+      },
+      "unit": "mg/dL",
+      "direct_transition": "DiagnosticReport_eGFR_3"
+    },
+    "DiagnosticReport_eGFR_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "eGFR_3"
+    },
+    "eGFR_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "range": {
+        "low": 11,
+        "high": 13
+      },
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "CMP_Panel_3"
+    },
+    "CMP_Panel_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "6299-2",
+              "display": "Urea nitrogen [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 68,
+            "high": 75
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6.0,
+            "high": 6.2
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2028-9",
+              "display": "Carbon dioxide, total [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 15,
+            "high": 17
+          },
+          "unit": "mEq/L"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2777-1",
+              "display": "Phosphate [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6.4,
+            "high": 6.6
+          },
+          "unit": "mg/dL"
+        }
+      ],
+      "direct_transition": "CBC_Panel_3"
+    },
+    "CBC_Panel_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 8.4,
+            "high": 8.6
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_PTH_2"
+    },
+    "DiagnosticReport_PTH_2": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2731-8",
+          "display": "Parathyroid hormone [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "PTH_2"
+    },
+    "PTH_2": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2731-8",
+          "display": "Parathyroid hormone [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 280,
+        "high": 290
+      },
+      "unit": "pg/mL",
+      "direct_transition": "Vascular_Mapping_Ultrasound"
+    },
+    "Vascular_Mapping_Ultrasound": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241551003",
+        "display": "Vascular ultrasound studies (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "368504007",
+            "display": "Structure of left upper limb (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Vascular Mapping Left Upper Extremity",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Chest_Xray_1"
+    },
+    "Chest_Xray_1": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "399208008",
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51185008",
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Chest X-Ray PA and Lateral",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "CarePlan_Dialysis_Prep"
+    },
+    "CarePlan_Dialysis_Prep": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "dialysis_prep_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "714000006",
+          "display": "Renal replacement therapy care plan (record artifact)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "385763009",
+          "display": "Hemodialysis preparation (regime/therapy)"
+        }
+      ],
+      "direct_transition": "Increase_EPO"
+    },
+    "Increase_EPO": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "epo_increased",
+      "reason": "anemia_ckd",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "1440928",
+          "display": "epoetin alfa 6000 UNT/ML Injectable Solution"
+        }
+      ],
+      "direct_transition": "Prescribe_Calcitriol"
+    },
+    "Prescribe_Calcitriol": {
+      "type": "MedicationOrder",
+      "assign_to_attribute": "calcitriol",
+      "codes": [
+        {
+          "system": "RxNorm",
+          "code": "308971",
+          "display": "calcitriol 0.25 MCG Oral Capsule"
+        }
+      ],
+      "direct_transition": "End_Encounter_3"
+    },
+    "End_Encounter_3": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_1_Month"
+    },
+    "Delay_1_Month": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Fistula_Surgery_Visit"
+    },
+    "Fistula_Surgery_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "71388002",
+          "display": "Procedure (procedure)"
+        }
+      ],
+      "direct_transition": "Pre_Op_CBC"
+    },
+    "Pre_Op_CBC": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 8.8,
+            "high": 9.2
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "AV_Fistula_Creation"
+    },
+    "AV_Fistula_Creation": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "431413001",
+          "display": "Creation of arteriovenous fistula for dialysis (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 90,
+        "high": 120,
+        "unit": "minutes"
+      },
+      "direct_transition": "Fistula_Ultrasound_Post_Op"
+    },
+    "Fistula_Ultrasound_Post_Op": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241551003",
+        "display": "Vascular ultrasound studies (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "368504007",
+            "display": "Structure of left upper limb (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Post-op AV Fistula Ultrasound",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "End_Encounter_4"
+    },
+    "End_Encounter_4": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_2_Months"
+    },
+    "Delay_2_Months": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "months"
+      },
+      "direct_transition": "Pre_Dialysis_Visit"
+    },
+    "Pre_Dialysis_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_Creatinine_4"
+    },
+    "DiagnosticReport_Creatinine_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "Creatinine_4"
+    },
+    "Creatinine_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "2160-0",
+          "display": "Creatinine [Mass/volume] in Serum or Plasma"
+        }
+      ],
+      "range": {
+        "low": 6.1,
+        "high": 6.3
+      },
+      "unit": "mg/dL",
+      "direct_transition": "DiagnosticReport_eGFR_4"
+    },
+    "DiagnosticReport_eGFR_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "eGFR_4"
+    },
+    "eGFR_4": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "48642-3",
+          "display": "Glomerular filtration rate/1.73 sq M.predicted among non-blacks [Volume Rate/Area] in Serum, Plasma or Blood by Creatinine-based formula (MDRD)"
+        }
+      ],
+      "range": {
+        "low": 8,
+        "high": 10
+      },
+      "unit": "mL/min/{1.73_m2}",
+      "direct_transition": "CMP_Panel_4"
+    },
+    "CMP_Panel_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6.3,
+            "high": 6.5
+          },
+          "unit": "mEq/L"
+        }
+      ],
+      "direct_transition": "Fistula_Maturation_Check"
+    },
+    "Fistula_Maturation_Check": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "241551003",
+        "display": "Vascular ultrasound studies (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "368504007",
+            "display": "Structure of left upper limb (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "US",
+            "display": "Ultrasound"
+          },
+          "instances": [
+            {
+              "title": "Fistula Maturation Assessment",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.6.1",
+                "display": "Ultrasound Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Chest_Xray_2"
+    },
+    "Chest_Xray_2": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "399208008",
+        "display": "Plain chest X-ray (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "51185008",
+            "display": "Thoracic structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "DX",
+            "display": "Digital Radiography"
+          },
+          "instances": [
+            {
+              "title": "Chest X-Ray Pre-Dialysis",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.1.1",
+                "display": "Digital X-Ray Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Dialysis_Catheter_Placement"
+    },
+    "Dialysis_Catheter_Placement": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "736960000",
+          "display": "Insertion of tunneled hemodialysis catheter (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_5"
+    },
+    "End_Encounter_5": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_2_Weeks"
+    },
+    "Delay_2_Weeks": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 2,
+        "unit": "weeks"
+      },
+      "direct_transition": "First_Dialysis_Visit"
+    },
+    "First_Dialysis_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "183452005",
+          "display": "Encounter for hemodialysis (procedure)"
+        }
+      ],
+      "direct_transition": "First_Hemodialysis_Procedure"
+    },
+    "First_Hemodialysis_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "302497006",
+          "display": "Hemodialysis (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 210,
+        "high": 250,
+        "unit": "minutes"
+      },
+      "direct_transition": "Post_Dialysis_Labs"
+    },
+    "Post_Dialysis_Labs": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4.0,
+            "high": 4.2
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4.1,
+            "high": 4.3
+          },
+          "unit": "mEq/L"
+        }
+      ],
+      "direct_transition": "CBC_Post_Dialysis"
+    },
+    "CBC_Post_Dialysis": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 9.1,
+            "high": 9.3
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "CarePlan_Chronic_Dialysis"
+    },
+    "CarePlan_Chronic_Dialysis": {
+      "type": "CarePlanStart",
+      "assign_to_attribute": "chronic_dialysis_careplan",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "714000006",
+          "display": "Renal replacement therapy care plan (record artifact)"
+        }
+      ],
+      "activities": [
+        {
+          "system": "SNOMED-CT",
+          "code": "302497006",
+          "display": "Hemodialysis (procedure)"
+        },
+        {
+          "system": "SNOMED-CT",
+          "code": "385763009",
+          "display": "Renal function monitoring (regime/therapy)"
+        }
+      ],
+      "direct_transition": "End_Encounter_6"
+    },
+    "End_Encounter_6": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_1_Month_2"
+    },
+    "Delay_1_Month_2": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Dialysis_Followup_1"
+    },
+    "Dialysis_Followup_1": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439740005",
+          "display": "Postoperative follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "Switch_to_Fistula_Procedure"
+    },
+    "Switch_to_Fistula_Procedure": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "225111009",
+          "display": "Removal of catheter (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 15,
+        "high": 20,
+        "unit": "minutes"
+      },
+      "direct_transition": "Monthly_Labs_1"
+    },
+    "Monthly_Labs_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 5.8,
+            "high": 6.5
+          },
+          "unit": "mg/dL"
+        },
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2823-3",
+              "display": "Potassium [Moles/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 4.8,
+            "high": 5.3
+          },
+          "unit": "mEq/L"
+        }
+      ],
+      "direct_transition": "Dialysis_Adequacy_Test_1"
+    },
+    "Dialysis_Adequacy_Test_1": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "45084-1",
+          "display": "Hemodialysis Kt/V"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "KtV_1"
+    },
+    "KtV_1": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "45084-1",
+          "display": "Hemodialysis Kt/V"
+        }
+      ],
+      "range": {
+        "low": 1.3,
+        "high": 1.5
+      },
+      "unit": "{ratio}",
+      "direct_transition": "End_Encounter_7"
+    },
+    "End_Encounter_7": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_1_Month_3"
+    },
+    "Delay_1_Month_3": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Dialysis_Followup_2"
+    },
+    "Dialysis_Followup_2": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "439740005",
+          "display": "Postoperative follow-up visit (procedure)"
+        }
+      ],
+      "direct_transition": "DiagnosticReport_HbA1c_3"
+    },
+    "DiagnosticReport_HbA1c_3": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "observations": [],
+      "direct_transition": "HbA1c_3"
+    },
+    "HbA1c_3": {
+      "type": "Observation",
+      "category": "laboratory",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "4548-4",
+          "display": "Hemoglobin A1c/Hemoglobin.total in Blood"
+        }
+      ],
+      "range": {
+        "low": 7.1,
+        "high": 7.3
+      },
+      "unit": "%",
+      "direct_transition": "CBC_Panel_4"
+    },
+    "CBC_Panel_4": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "58410-2",
+          "display": "Complete blood count (hemogram) panel - Blood by Automated count"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "718-7",
+              "display": "Hemoglobin [Mass/volume] in Blood"
+            }
+          ],
+          "range": {
+            "low": 10.4,
+            "high": 10.6
+          },
+          "unit": "g/dL"
+        }
+      ],
+      "direct_transition": "End_Encounter_8"
+    },
+    "End_Encounter_8": {
+      "type": "EncounterEnd",
+      "direct_transition": "Delay_1_Month_4"
+    },
+    "Delay_1_Month_4": {
+      "type": "Delay",
+      "exact": {
+        "quantity": 1,
+        "unit": "months"
+      },
+      "direct_transition": "Transplant_Workup_Visit"
+    },
+    "Transplant_Workup_Visit": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185349003",
+          "display": "Encounter for check up (procedure)"
+        }
+      ],
+      "direct_transition": "Transplant_Labs"
+    },
+    "Transplant_Labs": {
+      "type": "DiagnosticReport",
+      "codes": [
+        {
+          "system": "LOINC",
+          "code": "24323-8",
+          "display": "Comprehensive metabolic 2000 panel - Serum or Plasma"
+        }
+      ],
+      "observations": [
+        {
+          "category": "laboratory",
+          "codes": [
+            {
+              "system": "LOINC",
+              "code": "2160-0",
+              "display": "Creatinine [Mass/volume] in Serum or Plasma"
+            }
+          ],
+          "range": {
+            "low": 6.0,
+            "high": 6.8
+          },
+          "unit": "mg/dL"
+        }
+      ],
+      "direct_transition": "CT_Abdomen_Pelvis"
+    },
+    "CT_Abdomen_Pelvis": {
+      "type": "ImagingStudy",
+      "procedure_code": {
+        "system": "SNOMED-CT",
+        "code": "303653007",
+        "display": "Computed tomography of abdomen and pelvis (procedure)"
+      },
+      "series": [
+        {
+          "body_site": {
+            "system": "SNOMED-CT",
+            "code": "818983003",
+            "display": "Abdominopelvic cavity structure (body structure)"
+          },
+          "modality": {
+            "system": "DICOM-DCM",
+            "code": "CT",
+            "display": "Computed Tomography"
+          },
+          "instances": [
+            {
+              "title": "CT Abdomen/Pelvis - Transplant Workup",
+              "sop_class": {
+                "system": "DICOM-SOP",
+                "code": "1.2.840.10008.5.1.4.1.1.2",
+                "display": "CT Image Storage"
+              }
+            }
+          ]
+        }
+      ],
+      "direct_transition": "Transplant_Consult"
+    },
+    "Transplant_Consult": {
+      "type": "Procedure",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "306288008",
+          "display": "Kidney transplant consultation (procedure)"
+        }
+      ],
+      "duration": {
+        "low": 45,
+        "high": 60,
+        "unit": "minutes"
+      },
+      "direct_transition": "End_Encounter_9"
+    },
+    "End_Encounter_9": {
+      "type": "EncounterEnd",
+      "direct_transition": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  }
+}
